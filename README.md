@@ -1,2 +1,3 @@
-# Toshy---Coding-Agent
-Rivet-based coding agent for work in VSCode. In active development.
+# Toshy-Coding_Agent
+Rivet-based coding agent for work in VSCode.
+Is in active development.
