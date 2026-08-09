@@ -1,0 +1,14 @@
+name: Main Config
+version: 1.0.0
+schema: v1
+models:
+  - name: gem-agent
+    provider: openai
+    model: local-model
+    apiBase: http://localhost:3001/v1
+    requestOptions:
+      timeout: 1000000000
+context:
+  - provider: folder
+tabAutocompleteOptions:
+  disable: true
