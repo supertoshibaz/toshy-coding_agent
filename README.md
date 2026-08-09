@@ -20,8 +20,8 @@ Only for Linux now. Do not supports images for now.
 
 ## Installation
 ```bash
-git clone https://github.com/supertoshibaz/Toshy-Coding_Agent.git
-cd Toshy-Coding_Agent
+git clone https://github.com/supertoshibaz/toshy-coding_agent
+cd toshy-coding_agent
 npm install
 ```
 
