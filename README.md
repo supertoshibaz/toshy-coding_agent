@@ -16,6 +16,7 @@ Only for Linux now. Do not supports images for now.
 ## Dependencies
 - VSCode + Continue (2.0.0)
 - Node.js (v18+)
+- Local models
 - (Optional) [Rivet][riv]
 
 ## Installation
