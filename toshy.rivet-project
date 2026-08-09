@@ -1,0 +1,799 @@
+version: 4
+data:
+  attachedData:
+    trivet:
+      testSuites: []
+      version: 1
+  graphs:
+    5rKJlgZKkBnLmYhNaSbIG:
+      metadata:
+        description: ""
+        id: 5rKJlgZKkBnLmYhNaSbIG
+        name: embedding
+      nodes:
+        '[0UEBc6x4hVK9MEdnLJ8r2]:code "Code"':
+          data:
+            allowConsole: false
+            allowFetch: false
+            allowProcess: false
+            allowRequire: false
+            allowRivet: false
+            code: >-
+              if (inputs.response && inputs.response.data &&
+              inputs.response.data.length > 0) {
+                  return {
+                      vector: inputs.response.data[0].embedding
+                  };
+              } else {
+                  throw new Error("Неверный формат ответа от llama.cpp");
+              }
+            inputNames:
+              - response
+            outputNames: output1
+          outgoingConnections:
+            - output1->"Graph Output" iGl2OIQhAbpxAC5l54D_3/value
+          visualData: 1534.782676795364/344.6633252408176/230/14//
+        '[3Fjex68WUub9ruYmpYJlk]:graphInput "Graph Input"':
+          data:
+            dataType: string
+            id: text1
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Code" 3W0Qb6KKY5sB14Wt6c9kG/text
+          visualData: 424/420/330/1//
+        '[3W0Qb6KKY5sB14Wt6c9kG]:code "Code"':
+          data:
+            allowConsole: true
+            allowFetch: true
+            allowProcess: false
+            allowRequire: false
+            allowRivet: false
+            code: |-
+              return {
+                  requestBody: {
+                      input: inputs.text,
+                      model: "local"
+                  }
+              };
+            inputNames:
+              - text
+            outputNames:
+              - requestBody
+          outgoingConnections:
+            - requestBody->"Http Call" TusvrgksBDfz4YLyBQkjj/req_body
+          visualData: 825.6449996084267/355.4213329156551/230/12//
+        '[CmAq-ws9ZCO_G5KF7mM5Z]:text "Text"':
+          data:
+            normalizeLineEndings: true
+            text: unused
+          visualData: 1128.431727317668/167.32436593596094/330/17//
+        '[TusvrgksBDfz4YLyBQkjj]:httpCall "Http Call"':
+          data:
+            body: ""
+            errorOnNon200: true
+            headers: |-
+              {
+                "Content-Type": "application/json"
+              }
+            method: POST
+            url: http://127.0.0.1:8081/v1/embeddings
+            useBodyInput: true
+            useHeadersInput: false
+          outgoingConnections:
+            - json->"Code" 0UEBc6x4hVK9MEdnLJ8r2/response
+          visualData: 1151.6502999204017/322.61899913853864/280/16//
+        '[iGl2OIQhAbpxAC5l54D_3]:graphOutput "Graph Output"':
+          data:
+            dataType: any
+            id: vector1
+          visualData: 1890.8696843918865/437.6619938914558/330/15//
+    LuA9FNOuOTpLNX-xcWs52:
+      metadata:
+        description: ""
+        id: LuA9FNOuOTpLNX-xcWs52
+        name: agent
+      nodes:
+        '[8V86LR5u7BZcjmQH-IoTH]:graphInput "Graph Input"':
+          data:
+            dataType: any
+            id: prompt
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Loop Until" unHqUS6sszmZdaF-pwAeG/messages
+          visualData: 1002.4499098361082/619.8501035103826/330/400//
+        '[C2J_I1UoQ2fnqnR6zbafm]:graphOutput "Graph Output"':
+          data:
+            dataType: string
+            id: output
+          visualData: 1806.3026499563157/640.5440406938246/330/402//
+        '[unHqUS6sszmZdaF-pwAeG]:loopUntil "Loop Until"':
+          data:
+            conditionType: inputEqual
+            inputToCheck: continue_loop
+            maxIterations: 20
+            targetGraph: n1N7NzAykkjKfxggjeKCe
+            targetValue: "false"
+          outgoingConnections:
+            - final_text->"Graph Output" C2J_I1UoQ2fnqnR6zbafm/value
+          visualData: 1417.4713342079576/596.8462613167941/230/399//
+    n1N7NzAykkjKfxggjeKCe:
+      metadata:
+        description: ""
+        id: n1N7NzAykkjKfxggjeKCe
+        name: agent_step
+      nodes:
+        '[05AqOEhn7rk_YjIetZlvG]:graphOutput "Graph Output"':
+          data:
+            dataType: any
+            id: messages
+          visualData: 2030.8424461031868/495.2775114880545/330/444//
+        '[2M9GpwJpBo-aHsRmQde0w]:gptFunction "Tool"':
+          data:
+            description: Saves important user facts, rules, or preferences to your permanent
+              long-term memory. The user will ask you to "remember" this.
+            name: remember_this
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "fact": {
+                    "type": "string",
+                    "description": "The information to save. Write it clearly and concisely."
+                  }
+                },
+                "required": ["fact"]
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input5
+          visualData: 438.04749054721333/1136.4874229005682/280/473//
+        '[3Dpbo5uCjqRtbRw2jAv_Q]:gptFunction "Tool"':
+          data:
+            description: >-
+              "Read URL" - Full analysis of the web page under the received
+              link.
+
+              - When user sends you web link, you must to use this tool
+            name: read_url
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "The full HTTP/HTTPS URL of the webpage to read."
+                  }
+                },
+                "required": ["url"]
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input3
+          visualData: 149.85684341036728/1215.438587139161/280/465//
+        '[4tOa1AIiJQ7lnPU5UXVsf]:graphOutput "Graph Output"':
+          data:
+            dataType: string
+            id: final_text
+          visualData: 2029.2711005260057/826.5691666646627/330/444//
+        '[B6E4Wt3B_Lmf-JHRZZTsv]:array "Array"':
+          data:
+            flatten: true
+            flattenDeep: false
+          outgoingConnections:
+            - output->"Chat" rhSuCR_9GLp_H5xHdablv/functions
+          visualData: 847.7519237779846/1030.1606701716096/230/454//
+        '[BnzdbzNGx372DqcUoMJ21]:graphOutput "Graph Output"':
+          data:
+            dataType: string
+            id: continue_loop
+          visualData: 2028.3529508857728/657.4618596884034/330/444//
+        '[QNXLc_-tRYuIZhP2yjtUQ]:gptFunction "Tool"':
+          data:
+            description: Show for user all saved memory
+            name: list_memories
+            schema: |-
+              {
+                "type": "object",
+                "properties": {}
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input7
+          visualData: 440/1592.3801674921729/280/474//
+        '[TgMgM0_qSnY5G4I4IS4Ws]:graphInput "Graph Input"':
+          data:
+            dataType: any
+            id: messages
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Chat" rhSuCR_9GLp_H5xHdablv/prompt
+            - data->"Code" as9v4cJI8ZCCerfh-AxWo/messages
+          visualData: 755.6263757904946/761.5683470273116/330/446//
+        '[VszjhNzog8B2TptCivPUn]:gptFunction "Tool"':
+          data:
+            description: >-
+              "Deep Web Search" - Detailed search with analysis of web page
+              content. Use for full analysis or when the tool "Lite Web Search"
+              doesnt help.
+
+              - Use after user straight command to search something.
+
+              - Use if you dont know or not sure about what user tells.
+            name: deep_web_search
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "The search query to look up on the web. Keep it focused and keyword-based."
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input2
+          visualData: 148.4534088418274/878.9254054576832/280/460//
+        '[as9v4cJI8ZCCerfh-AxWo]:code "Code"':
+          data:
+            allowConsole: true
+            allowFetch: true
+            allowProcess: false
+            allowRequire: false
+            allowRivet: false
+            code: >-
+              //
+              ============================================================================
+
+              // 1. БЕЗОПАСНОЕ ИЗВЛЕЧЕНИЕ ДАННЫХ ИЗ RIVET
+
+              // ============================================================================
+
+              let history = [];
+
+              if (inputs.messages) {
+                  if (Array.isArray(inputs.messages)) history = inputs.messages;
+                  else if (Array.isArray(inputs.messages.value)) history = inputs.messages.value;
+              }
+
+
+              let textResponse = "";
+
+              if (inputs.response) {
+                  if (typeof inputs.response === 'string') textResponse = inputs.response;
+                  else if (typeof inputs.response.value === 'string') textResponse = inputs.response.value;
+              }
+
+
+              let firstCall = null;
+
+              let calls = inputs.function_call;
+
+
+              if (calls) {
+                  if (calls.type === 'object[]' && Array.isArray(calls.value)) calls = calls.value;
+                  else if (calls.type === 'object' && calls.value) calls = [calls.value];
+                  
+                  if (Array.isArray(calls) && calls.length > 0) {
+                      firstCall = calls[0];
+                      if (firstCall && firstCall.value) firstCall = firstCall.value;
+                  } else if (typeof calls === 'object' && !Array.isArray(calls)) {
+                      firstCall = calls;
+                  }
+              }
+
+
+              // ============================================================================
+
+              // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+
+              // ============================================================================
+
+              async function fetchAndCleanPage(url, maxLength) {
+                  try {
+                      const controller = new AbortController();
+                      const timeoutId = setTimeout(() => controller.abort(), 10000);
+                      const res = await fetch(url, { signal: controller.signal, headers: { 'User-Agent': 'Mozilla/5.0' } });
+                      clearTimeout(timeoutId);
+                      
+                      if (!res.ok) return null; 
+                      
+                      let html = await res.text();
+                      html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
+                      html = html.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
+                      let text = html.replace(/<[^>]+>/g, ' ');
+                      text = text.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+                      text = text.replace(/\s+/g, ' ').trim();
+                      return text.substring(0, maxLength);
+                  } catch (e) { 
+                      return null; 
+                  }
+              }
+
+
+              async function saveToMemory(text, source) {
+                  try {
+                      await fetch('http://localhost:3001/internal/memory/store', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ text, source })
+                      });
+                      return true;
+                  } catch (e) { 
+                      console.log("* DISPATCHER ERROR: Failed to save to memory:", e.message);
+                      return false; 
+                  }
+              }
+
+
+              // ============================================================================
+
+              // ЛОГИРОВАНИЕ И ПРОВЕРКА ИНСТРУМЕНТОВ
+
+              // ============================================================================
+
+              console.log(`\n--- [DISPATCHER ITERATION] ---`);
+
+              console.log(`* Tool Called: ${firstCall ? `YES (${firstCall.name})` : 'NO'}`);
+
+
+              const allowedTools = [
+                  'lite_web_search', 
+                  'deep_web_search', 
+                  'read_url', 
+                  'search_memory', 
+                  'remember_this', 
+                  'forget_this', 
+                  'list_memories'
+              ];
+
+
+              // ============================================================================
+
+              // СЦЕНАРИЙ А: ВЫЗОВ ИНСТРУМЕНТА
+
+              // ============================================================================
+
+              if (firstCall && allowedTools.includes(firstCall.name)) {
+                  
+                  let args = {};
+                  try {
+                      if (typeof firstCall.arguments === 'string') args = JSON.parse(firstCall.arguments);
+                      else if (firstCall.arguments) args = firstCall.arguments;
+                  } catch (e) {
+                      console.log("* DISPATCHER ERROR: Failed to parse arguments");
+                  }
+                  
+                  let searchResults = "";
+                  const toolName = firstCall.name;
+                  
+                  try {
+                      //lite search
+                      if (toolName === 'lite_web_search') {
+                          let query = args.query || "unknown query";
+                          console.log(`* DISPATCHER: Executing lite web search for: "${query}"`);
+                          
+                          const res = await fetch('https://lite.duckduckgo.com/lite/', { 
+                              method: 'POST', 
+                              headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla/5.0' }, 
+                              body: `q=${encodeURIComponent(query)}` 
+                          });
+                          const html = await res.text();
+                          
+                          const regex = /<td class='result-snippet'>([\s\S]*?)<\/td>/gi;
+                          let matches; 
+                          let snippets = [];
+                          while ((matches = regex.exec(html)) !== null && snippets.length < 4) {
+                              snippets.push("- " + matches[1].replace(/(<([^>]+)>)/gi, "").trim());
+                          }
+                          searchResults = snippets.length > 0 ? "WEB SEARCH RESULTS:\n" + snippets.join("\n\n") : "No results found.";
+                      } 
+                      
+                      //deep search
+                      else if (toolName === 'deep_web_search') {
+                          let query = args.query || "unknown query";
+                          console.log(`* DISPATCHER: Executing deep web search for: "${query}"`);
+                          
+                          const res = await fetch('https://lite.duckduckgo.com/lite/', { 
+                              method: 'POST', 
+                              headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla/5.0' }, 
+                              body: `q=${encodeURIComponent(query)}` 
+                          });
+                          const html = await res.text();
+                          
+                          const urlRegex = /href=(["'])(.*?)\1/gi;
+                          let match; 
+                          const rawUrls = [];
+                          
+                          while ((match = urlRegex.exec(html)) !== null) {
+                              let u = match[2];
+                              if (u.includes('uddg=')) { 
+                                  const uddgMatch = /uddg=([^&]+)/.exec(u); 
+                                  if (uddgMatch) u = decodeURIComponent(uddgMatch[1]); 
+                              }
+                              if (u.startsWith('http') && !u.includes('duckduckgo.com')) {
+                                  rawUrls.push(u);
+                              }
+                          }
+                          
+                          const uniqueUrls = [...new Set(rawUrls)].slice(0, 3);
+                          
+                          if (uniqueUrls.length === 0) {
+                              searchResults = "ERROR: No valid URLs found.";
+                          } else {
+                              let savedCount = 0;
+                              for (const u of uniqueUrls) { 
+                                  console.log(`  -> Fetching and saving: ${u}`);
+                                  const text = await fetchAndCleanPage(u, 10000); 
+                                  if (text && await saveToMemory(text, u)) {
+                                      savedCount++; 
+                                  }
+                              }
+                              searchResults = `SYSTEM MESSAGE: Read and saved ${savedCount} pages to temporary memory. Use 'search_memory' tool to ask specific questions.`;
+                          }
+                      } 
+                      
+                      //read url
+                      else if (toolName === 'read_url') {
+                          let rawUrl = args.url || "";
+                          let urlMatch = rawUrl.match(/https?:\/\/[^\s"'>]+/i);
+                          let urlToRead = urlMatch ? urlMatch[0] : rawUrl.trim();
+                          
+                          console.log(`* DISPATCHER: Reading URL: ${urlToRead}`);
+                          
+                          if (!urlToRead.startsWith('http')) {
+                              searchResults = "ERROR: Invalid URL.";
+                          } else {
+                              const text = await fetchAndCleanPage(urlToRead, 40000);
+                              if (text && await saveToMemory(text, urlToRead)) {
+                                  searchResults = `SYSTEM MESSAGE: Page saved to temporary memory. Use 'search_memory' tool to extract details.`;
+                              } else {
+                                  searchResults = "ERROR: Failed to read or save the page.";
+                              }
+                          }
+                      }
+                      
+                      //search memories
+                      else if (toolName === 'search_memory') {
+                          let searchQuery = args.query || "";
+                          console.log(`* DISPATCHER: Searching memory for: "${searchQuery}"`);
+                          
+                          const res = await fetch('http://localhost:3001/internal/memory/search', { 
+                              method: 'POST', 
+                              headers: { 'Content-Type': 'application/json' }, 
+                              body: JSON.stringify({ query: searchQuery }) 
+                          });
+                          const data = await res.json();
+                          searchResults = data.results || "No information found in memory.";
+                      }
+                      
+                      //remember this
+                      else if (toolName === 'remember_this') {
+                          let factToSave = args.fact || args.query || args.text || "";
+                          if (!factToSave && typeof args === 'string') factToSave = args;
+                          if (!factToSave) factToSave = JSON.stringify(args);
+                          
+                          console.log(`* DISPATCHER: Saving permanent memory: "${factToSave}"`);
+                          
+                          const res = await fetch('http://localhost:3001/internal/memory/permanent/store', { 
+                              method: 'POST', 
+                              headers: { 'Content-Type': 'application/json' }, 
+                              body: JSON.stringify({ fact: factToSave }) 
+                          });
+                          const data = await res.json();
+                          
+                          if (data.success) {
+                              searchResults = `SYSTEM MESSAGE: Successfully saved to permanent memory with ID: ${data.id}`;
+                          } else {
+                              searchResults = `SYSTEM ERROR: Failed to save memory. Reason: ${data.error || 'Unknown'}`;
+                          }
+                      }
+                      
+                      //forget this
+                      else if (toolName === 'forget_this') {
+                          let idToDelete = args.id || "";
+                          console.log(`* DISPATCHER: Deleting permanent memory ID: ${idToDelete}`);
+                          
+                          const res = await fetch('http://localhost:3001/internal/memory/permanent/delete', { 
+                              method: 'POST', 
+                              headers: { 'Content-Type': 'application/json' }, 
+                              body: JSON.stringify({ id: idToDelete }) 
+                          });
+                          const data = await res.json();
+                          
+                          if (data.success) {
+                              searchResults = `SYSTEM MESSAGE: Successfully deleted memory with ID: ${idToDelete}`;
+                          } else {
+                              searchResults = `SYSTEM ERROR: Failed to delete. Error: ${data.error}`;
+                          }
+                      }
+                      
+                      //list memories
+                      else if (toolName === 'list_memories') {
+                          console.log(`* DISPATCHER: Requesting permanent memory list...`);
+                          
+                          const res = await fetch('http://localhost:3001/internal/memory/permanent/list');
+                          const data = await res.json();
+                          searchResults = data.results || "SYSTEM ERROR: Failed to fetch memory list.";
+                      }
+                      
+                  } catch (error) {
+                      searchResults = `Error performing ${toolName}: ${error.message}`;
+                      console.log(`* DISPATCHER ERROR: ${searchResults}`);
+                  }
+
+                  // Сохраняем вызов функции в историю
+                  const newMessages = [...history];
+                  newMessages.push({
+                      type: 'assistant',
+                      message: textResponse || "", 
+                      function_call: { 
+                          name: toolName, 
+                          arguments: typeof firstCall.arguments === 'string' ? firstCall.arguments : JSON.stringify(firstCall.arguments) 
+                      }
+                  });
+                  
+                  // Сохраняем результат выполнения
+                  newMessages.push({ type: 'function', name: toolName, message: searchResults });
+
+                  return { 
+                      updated_messages: { type: 'chat-message[]', value: newMessages }, 
+                      continue_loop: { type: 'string', value: "true" }, 
+                      final_text: { type: 'string', value: "" } 
+                  };
+              }
+
+
+              // ============================================================================
+
+              // СЦЕНАРИЙ Б: ФИНАЛЬНЫЙ ОТВЕТ (БЕЗ ФУНКЦИЙ)
+
+              // ============================================================================
+
+              console.log(`* DISPATCHER: No tools requested. Stopping loop.`);
+
+
+              const finalMessages = [...history];
+
+              if (textResponse) {
+                  finalMessages.push({ type: 'assistant', message: textResponse });
+              }
+
+
+              return {
+                  updated_messages: { type: 'chat-message[]', value: finalMessages },
+                  continue_loop: { type: 'string', value: "false" },
+                  final_text: { type: 'string', value: textResponse }
+              };
+            inputNames:
+              - messages
+              - response
+              - function_call
+              - ""
+            outputNames:
+              - updated_messages
+              - continue_loop
+              - final_text
+          outgoingConnections:
+            - continue_loop->"Graph Output" BnzdbzNGx372DqcUoMJ21/value
+            - final_text->"Graph Output" 4tOa1AIiJQ7lnPU5UXVsf/value
+            - updated_messages->"Graph Output" 05AqOEhn7rk_YjIetZlvG/value
+          visualData: 1587.3411918180275/529.5740124208314/230/435//
+        '[nlCwV6Z45w5nJL7wWBrpl]:gptFunction "Tool"':
+          data:
+            description: >-
+              "Lite Web Search" - Suitable only for minor clarifications. For
+              full web analysis, use the tool "Deep Web Search".
+
+              - Use to specify short actuall information, like actual date or last version of something
+            name: lite_web_search
+            promptText: ""
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "The search query to look up on the web. Keep it focused and keyword-based."
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input1
+          visualData: 149.82805839329092/1466.252009453163/280/466//
+        '[o22a9FvQ0lBx5106bjeWT]:prompt "Prompt"':
+          data:
+            enableFunctionCall: false
+            promptText: >-
+              Today is half of 2026 year
+
+
+              0. In general
+
+              - Your response must not contain useless text unrelated to the actual task. If you write anything other than code, it must be strictly relevant to the task.
+
+              - All code you write must be in markdown
+
+
+              1. Think Before Coding
+
+              Don't assume. Don't hide confusion. Surface tradeoffs. Before implementing:
+
+              - State your assumptions explicitly. If uncertain, ask.
+
+              - If multiple interpretations exist, present them - don't pick silently.
+
+              - If a simpler approach exists, say so. Push back when warranted.
+
+              - If something is unclear, stop. Name what's confusing. Ask.
+
+
+              2. Simplicity First
+
+              Minimum code that solves the problem. Nothing speculative.
+
+              - No features beyond what was asked.
+
+              - No abstractions for single-use code.
+
+              - No "flexibility" or "configurability" that wasn't requested.
+
+              - No error handling for impossible scenarios.
+
+              - If you write 200 lines and it could be 50, rewrite it.
+
+
+              3. Surgical Changes
+
+              Touch only what you must. Clean up only your own mess.
+
+              - Don't "improve" adjacent code, comments, or formatting.
+
+              - Don't refactor things that aren't broken.
+
+              - Match existing style, even if you'd do it differently.
+
+              - If you notice unrelated dead code, mention it - don't delete it.
+
+              When your changes create orphans:
+
+              - Remove imports/variables/functions that YOUR changes made unused.
+
+              - Don't remove pre-existing dead code unless asked.
+
+              The test: Every changed line should trace directly to the user's request.
+
+
+              4. About tools
+
+              "Lite Web Search" - Suitable only for minor clarifications. For full web analysis, use the tool "Deep Web Search".
+
+              - Use to specify short actuall information, like actual date or last version of something
+
+              "Deep Web Search" - Detailed search with analysis of web page content. Use for full analysis or when the tool "Lite Web Search" doesnt help.
+
+              - Use after user straight command to search something.
+
+              - Use if you dont know or not sure about what user tells.
+
+              "Read URL" - Full analysis of the web page under the received link.
+
+              - When user sends you web link, you must to use this tool
+
+              "Search Memory" - Searches your temporary internal vector database.
+
+              - ALWAYS use this tool EVERY user appeal to you.
+
+              - If you need to find information in web, first use deep_web_search or read_url and only after that use search_memories.
+
+              - Also, if you need information and have already used deep_web_search or read_url regarding the topic you're interested in now, first use read_memory instead of repeating deep_web_search or read_url
+
+              "Remember This" - Saves important user facts, rules, or preferences to your permanent long-term memory.
+
+              - Use after user straight command to remember something.
+
+              "Forget This" - Deletes a specific fact from permanent memory using its ID.
+
+              - Use after user straight command to forget something.
+
+              - First use search_memory to find the ID, then use this tool.
+
+              "List Memories" - Show for user all saved memory. This is service tool needed oly for user.
+
+              - Use ONLY after straight user command to show memory list
+
+              - There no other cases to use that
+            type: system
+            useTypeInput: false
+          outgoingConnections:
+            - output->"Chat" rhSuCR_9GLp_H5xHdablv/systemPrompt
+          visualData: 815.8206594095075/209.71266348187012/280/419//
+        '[rhSuCR_9GLp_H5xHdablv]:chat "Chat"':
+          data:
+            additionalParameters: []
+            cache: false
+            enableFunctionUse: true
+            endpoint: http://localhost:8080/v1/chat/completions
+            headers: []
+            maxTokens: 32000
+            modalitiesIncludeAudio: false
+            modalitiesIncludeText: false
+            model: local-model
+            outputUsage: false
+            parallelFunctionCalling: true
+            reasoningEffort: ""
+            stop: ""
+            temperature: 0.3
+            top_p: 0.9
+            useAdditionalParametersInput: false
+            useAsGraphPartialOutput: true
+            useFrequencyPenaltyInput: false
+            useMaxTokensInput: false
+            useModelInput: false
+            usePredictedOutput: false
+            usePresencePenaltyInput: false
+            useReasoningEffortInput: false
+            useServerTokenCalculation: true
+            useStop: false
+            useStopInput: false
+            useTemperatureInput: false
+            useTopP: false
+            useTopPInput: false
+            useUseTopPInput: false
+            useUserInput: false
+          outgoingConnections:
+            - function-calls->"Code" as9v4cJI8ZCCerfh-AxWo/function_call
+            - response->"Code" as9v4cJI8ZCCerfh-AxWo/response
+          visualData: 1228.07406533566/503.4385875652245/230/445//
+        '[z3ysEp_4hzrsa_HoTllDX]:gptFunction "Tool"':
+          data:
+            description: Searches your temporary and permanent internal vector database.
+              ALWAYS use this tool EVERY user appeal to you. If you need to find
+              information in web, first use deep_web_search or read_url and only
+              after that use search_memories
+            name: search_memory
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "The specific question or keyword you are looking for in memory."
+                  }
+                },
+                "required": ["query"]
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input4
+          visualData: 438.8680685058866/877.6481171195051/280/464//
+        '[zZ7iB6Y8_UP_7rKdVZMNz]:gptFunction "Tool"':
+          data:
+            description: Deletes a specific fact from permanent memory using its ID. First
+              use search_memory to find the ID, then use this tool.
+            name: forget_this
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The exact ID of the memory to delete (e.g., mem_172948274)."
+                  }
+                },
+                "required": ["id"]
+              }
+          outgoingConnections:
+            - function->"Array" B6E4Wt3B_Lmf-JHRZZTsv/input6
+          visualData: 439.0391865991065/1361.4567412269596/280/475//
+  metadata:
+    description: ""
+    id: Hy2aUg3hjAEwo8FLyaTkm
+    title: workflow1
+  plugins:
+    - id: rivet-plugin-ollama@latest
+      package: rivet-plugin-ollama
+      tag: latest
+      type: package
+  references: []
