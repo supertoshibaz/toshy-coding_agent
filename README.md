@@ -1,4 +1,4 @@
-# Toshy - Coding Agent v0.1
+# Coding Agent v0.1
 [Rivet][riv]-based coding agent for work in VSCode. \
 Is in active development. \
 Only for Linux now. Do not supports images for now.
