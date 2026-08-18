@@ -1,4 +1,4 @@
-# Coding Agent v0.1
+# tr-agent Coding Agent v0.1
 [Rivet][riv]-based coding agent for work in VSCode. \
 Is in active development. \
 Only for Linux now. Do not supports images for now.
@@ -21,7 +21,7 @@ Only for Linux now. Do not supports images for now.
 
 ## Installation
 ```bash
-git clone https://github.com/supertoshibaz/toshy
+git clone https://github.com/supertoshibaz/tr-agent
 cd toshy
 npm install
 ```
