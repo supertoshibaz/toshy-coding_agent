@@ -1,3 +1,5 @@
+### <u>It is my first attempt to make some agent. It works, but not actually helpful for real pipelines. If you looking for reals tools, check out other my projects in profile.</u>
+
 # tr-agent Coding Agent v0.1
 [Rivet][riv]-based coding agent for work in VSCode. \
 Is in active development. \
